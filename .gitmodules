@@ -1,0 +1,9 @@
+[submodule "character-service"]
+	path = character-service
+	url = https://github.com/dragonbotz/character-service.git
+[submodule "portal-service"]
+	path = portal-service
+	url = https://github.com/dragonbotz/portal-service.git
+[submodule "summon-service"]
+	path = summon-service
+	url = https://github.com/dragonbotz/summon-service.git
