@@ -1,0 +1,32 @@
+# This docker compose file is used to run Dragon Bot Z
+#
+# Authors: Lahcène Belhadi <lahcene.belhadi@gmail.com>
+version: '3.9'
+services:
+  # The character service
+  character-service:
+    image: dbz-character-service
+    container_name: dbz-character-service
+    ports:
+      - 58180:8080
+    depends_on:
+      - character-database
+    restart: always
+
+  character-database:
+    image: postgres:16
+    container_name: dbz-character-database
+    volumes:
+      - dbz-character-database-volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "${DBZ_CHARACTER_DATABASE_PG_SUPERUSER_PASS}"
+
+# The volumes are all external volumes and must created using
+# `docker volume create` command
+volumes:
+  # Character database volume
+  dbz-character-database-volume:
+    external: true
