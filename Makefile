@@ -38,3 +38,18 @@ service-character: pull-character-service print-done service-character-builder p
 clear-images-builder:
 	@echo "[CLEAR IMAGES] Clearing images..."
 	@docker image rm -f dbz-character-service-builder
+
+# Initializes databases
+init-databases:
+	@echo "[INIT DATABASES] Initializing databases...\c"
+	# Starts services
+	@docker compose up -d
+	
+	# Init character database
+	# copies database config inside container, then runs the database
+	# configuration
+	@docker cp character-service/res/init_database.sql dbz-character-database:/var/lib/postgresql/data
+	@docker exec -u postgres dbz-character-database psql -f /var/lib/postgresql/data/init_database.sql
+
+	# Shuts down services
+	@docker compose down
