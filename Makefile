@@ -3,9 +3,7 @@
 # Authors: Lahcène Belhadi <lahcene.belhadi@gmail.com>
 
 # Building all services
-all: 	pull-services \
-		service-character-builder print-done \
-		service-character print-done \
+all: 	service-character print-done \
 		clear-images-builder print-done 
 
 pull-services: pull-character-service print-done
@@ -28,7 +26,7 @@ service-character-builder:
 		--quiet
 
 # Builds the character service
-service-character:
+service-character: pull-character-service print-done service-character-builder print-done
 	@echo "[SERVICE CHARACTER] Building Character service image...\c"
 	@docker run \
 		-v /var/run/docker.sock:/var/run/docker.sock \
