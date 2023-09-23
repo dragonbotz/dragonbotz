@@ -4,7 +4,8 @@
 
 # Building all services
 all: 	service-character print-done \
-		clear-images-builder print-done 
+		clear-images-builder print-done \
+		init-databases print-done
 
 pull-services: pull-character-service print-done
 
