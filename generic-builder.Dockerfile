@@ -38,7 +38,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 WORKDIR sources
 COPY ${SERVICE_DIR}/ .
 
-RUN $HOME/.cargo/bin/cargo build --release
+RUN $HOME/.cargo/bin/cargo build --release --jobs=-1
 
 # installing docker
 RUN curl https://get.docker.com | sh -
