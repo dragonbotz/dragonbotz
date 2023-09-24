@@ -5,24 +5,29 @@ To build the project, you need to install the followings softwares first:
 - [docker](https://www.docker.com/)
 
 ## Volumes
-Here are the external volumes you need to create before running `docker-compose`:
-- **dbz-character-database-volume**
-
-Here's the command you need to type to do so:
+To create the service's volumes you need to run the following command:
 ```bash
-$ docker volume create dbz-character-database-volume
+$ make init
 ```
 
 # Quick Build
-To build the whole project, run the following command:
+To build the whole project, run the following commands:
 ```bash
-$ make all
+$ make services -j
+$ make init -j
+$ make clear -j
 ```
 
-## Character service build
+## Character service
 To build the character service, run:
 ```bash
-$ make service-character
+$ make character-service
+```
+
+## Portal service
+To build the portal service, run:
+```bash
+$ make portal-service
 ```
 
 ## Cleaning builder images
@@ -31,5 +36,32 @@ them anymore.
 
 To do so, please run the following command:
 ```bash
-$ make clear-images-builder
+$ make clear -j
 ```
+
+# Database configuration
+Each service's database must run on its own port. Here's the list of databases and their corresponding ports:
+- **dbz-character-database**: `5432`
+- **dbz-portal-database**   : `5433`
+
+To change databases configuration you need to run the following commands:
+```bash
+$ docker compose up -d                          # Starts the services and their database
+$ docker exec -it <SERVICE_NAME>-database bash  # Attach your terminal to the service
+```
+Then edit `/var/lib/postgresql/data/postgres.conf` and change the value of `port` to the proper value (discussed above).
+
+# Troubleshooting
+## Database init
+The database initialization process may fail and display an error message similar to this:
+```
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+```
+To fix this, you might want to run the following command:
+```bash
+$ make init
+```
+In most cases running `make init` again fixes the issue.
+
+If the problem persists, don't hesitate to open an **issue**.
