@@ -49,7 +49,7 @@ To change databases configuration you need to run the following commands:
 $ docker compose up -d                          # Starts the services and their database
 $ docker exec -it <SERVICE_NAME>-database bash  # Attach your terminal to the service
 ```
-Then edit `/var/lib/postgresql/data/postgres.conf` and change the value of `port` to the proper value (discussed above).
+Then edit `/var/lib/postgresql/data/postgresql.conf` and change the value of `port` to the proper value (discussed above).
 
 # Troubleshooting
 ## Database init
