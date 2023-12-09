@@ -7,3 +7,6 @@
 [submodule "summon-service"]
 	path = summon-service
 	url = https://github.com/dragonbotz/summon-service.git
+[submodule "discord-client"]
+	path = discord-client
+	url = https://github.com/dragonbotz/discord-client.git
