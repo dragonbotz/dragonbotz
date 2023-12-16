@@ -13,3 +13,6 @@
 [submodule "dbzlib-rs"]
 	path = dbzlib-rs
 	url = https://github.com/dragonbotz/dbzlib-rs.git
+[submodule "player-collection"]
+	path = player-collection
+	url = https://github.com/dragonbotz/player-collection.git
