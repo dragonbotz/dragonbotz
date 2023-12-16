@@ -12,6 +12,8 @@ services:
     depends_on:
       - character-database
     restart: always
+    environment:
+      DBZ_PG_SUPERUSER_PASS: "${DBZ_PG_SUPERUSER_PASS}"
 
   character-database:
     image: postgres:16
@@ -33,6 +35,8 @@ services:
     depends_on:
       - portal-database
     restart: always
+    environment:
+      DBZ_PG_SUPERUSER_PASS: "${DBZ_PG_SUPERUSER_PASS}"
 
   portal-database:
     image: postgres:16
@@ -44,6 +48,17 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: "${DBZ_PG_SUPERUSER_PASS}"
+
+  # Summon service
+  summon-service:
+    image: dbz-summon-service
+    container_name: dbz-summon-service
+    ports:
+      - 58182:8080
+    depends_on:
+      - character-service
+      - portal-service
+    restart: always
 
 # The volumes are all external volumes and must be created using
 # `docker volume create` command

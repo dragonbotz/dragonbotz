@@ -10,3 +10,6 @@
 [submodule "discord-client"]
 	path = discord-client
 	url = https://github.com/dragonbotz/discord-client.git
+[submodule "dbzlib-rs"]
+	path = dbzlib-rs
+	url = https://github.com/dragonbotz/dbzlib-rs.git
