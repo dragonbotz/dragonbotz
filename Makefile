@@ -86,6 +86,17 @@ define init_service_database
 	$(call compose_down)
 endef
 
+# Replaces postgresql configuration
+#
+# # Arguments
+# * (1) config - the configuration path
+# * (2) container - database container
+define postgresql_config
+	$(call compose_up)
+	@docker cp $(1) $(2):/var/lib/postgresql/data
+	$(call compose_down)
+endef
+
 # COMMANDS
 
 # Build
@@ -98,6 +109,7 @@ clear: clear-images-builder
 clear-images-builder:
 	$(call remove_image,dbz-character-service-builder)
 	$(call remove_image,dbz-portal-service-builder)
+	$(call remove_image,dbz-summon-service-builder)
 
 # Services
 ## Init all services
@@ -106,6 +118,7 @@ init: init-volumes init-databases
 ## Build all services
 services: 	character-service \
 			portal-service \
+			summon-service \
 
 ## Character service
 ### Builds the character service
@@ -125,6 +138,15 @@ portal-service: portal-service-builder
 portal-service-builder:
 	$(call build_service_builder,portal-service,dbz-portal-service-builder)
 
+## Summon service
+### Builds the summon service
+summon-service: summon-service-builder
+	$(call build_service,Dockerfile,dbz-summon-service,dbz-summon-service-builder)
+
+### Builds the summon service builder
+summon-service-builder:
+	$(call build_service_builder,summon-service,dbz-summon-service-builder)
+
 ## Initializes the required external volumes
 init-volumes:
 	$(call create_volume,dbz-character-database-volume)
@@ -133,3 +155,6 @@ init-volumes:
 ## Initializes databases
 init-databases:
 	$(call init_service_database,character-service/res/init_database.sql,dbz-character-database)
+	$(call init_service_database,portal-service/res/init_database.sql,dbz-portal-database)
+
+	$(call postgresql_config,portal-service/res/postgresql.conf,dbz-portal-database)
