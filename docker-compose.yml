@@ -60,6 +60,27 @@ services:
       - portal-service
     restart: always
 
+  # Player collecion service
+  player-collection-service:
+    image: dbz-player-collection-service
+    container_name: dbz-player-collection-service
+    ports:
+      - 58183:8080
+    restart: always
+    environment:
+      DBZ_PG_SUPERUSER_PASS: "${DBZ_PG_SUPERUSER_PASS}"
+
+  player-collection-database:
+    image: postgres:16
+    container_name: dbz-player-collection-database
+    volumes:
+      - dbz-player-collection-database-volume:/var/lib/postgresql/data
+    ports:
+      - 5434:5434
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "${DBZ_PG_SUPERUSER_PASS}"
+
 # The volumes are all external volumes and must be created using
 # `docker volume create` command
 volumes:
@@ -69,4 +90,8 @@ volumes:
   
   # Portal database volume
   dbz-portal-database-volume:
+    external: true
+
+  # Player collection volume
+  dbz-player-collection-database-volume:
     external: true
