@@ -78,11 +78,12 @@ endef
 # # Arguments
 # * (1) script - init script path
 # * (2) container - service's database container
+# * (3) port - Postgresql port
 define init_service_database
 	$(call compose_up)
 	@echo "Initializing database of $(2)..."
 	@docker cp $(1) $(2):/var/lib/postgresql/data
-	@docker exec -u postgres $(2) psql -f /var/lib/postgresql/data/init_database.sql
+	@docker exec -u postgres $(2) psql -p $(3) -f /var/lib/postgresql/data/init_database.sql
 	$(call compose_down)
 endef
 
@@ -110,6 +111,7 @@ clear-images-builder:
 	$(call remove_image,dbz-character-service-builder)
 	$(call remove_image,dbz-portal-service-builder)
 	$(call remove_image,dbz-summon-service-builder)
+	$(call remove_image,dbz-player-collection-service-builder)
 
 # Services
 ## Init all services
@@ -119,6 +121,7 @@ init: init-volumes init-databases
 services: 	character-service \
 			portal-service \
 			summon-service \
+			player-collection-service \
 
 ## Character service
 ### Builds the character service
@@ -147,14 +150,25 @@ summon-service: summon-service-builder
 summon-service-builder:
 	$(call build_service_builder,summon-service,dbz-summon-service-builder)
 
+## Player collection service
+player-collection-service: player-collection-service-builder
+	$(call build_service,Dockerfile,dbz-player-collection-service,dbz-player-collection-service-builder)
+
+### Builds player collection service builder
+player-collection-service-builder:
+	$(call build_service_builder,player-collection,dbz-player-collection-service-builder)
+
 ## Initializes the required external volumes
 init-volumes:
 	$(call create_volume,dbz-character-database-volume)
 	$(call create_volume,dbz-portal-database-volume)
+	$(call create_volume,dbz-player-collection-database-volume)
 
 ## Initializes databases
 init-databases:
-	$(call init_service_database,character-service/res/init_database.sql,dbz-character-database)
-	$(call init_service_database,portal-service/res/init_database.sql,dbz-portal-database)
-
 	$(call postgresql_config,portal-service/res/postgresql.conf,dbz-portal-database)
+	$(call postgresql_config,player-collection/res/postgresql.conf,dbz-player-collection-database)
+
+	$(call init_service_database,character-service/res/init_database.sql,dbz-character-database,5432)
+	$(call init_service_database,portal-service/res/init_database.sql,dbz-portal-database,5433)
+	$(call init_service_database,player-collection/res/init_database.sql,dbz-player-collection-database,5434)
