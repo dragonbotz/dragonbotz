@@ -112,6 +112,7 @@ clear-images-builder:
 	$(call remove_image,dbz-portal-service-builder)
 	$(call remove_image,dbz-summon-service-builder)
 	$(call remove_image,dbz-player-collection-service-builder)
+	@docker rmi -f $$(docker images -f "dangling=true" -q)
 
 # Services
 ## Init all services
