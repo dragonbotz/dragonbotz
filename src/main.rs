@@ -13,9 +13,37 @@
 //!
 //! You should have received a copy of the GNU General Public License
 //! along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//!
+//! ---
 //! dragonbotz entrypoint
+pub mod models;
+pub mod services;
 
-fn main() {
-    println!("Hello, world!");
+use tonic::transport::Server;
+use tracing::info;
+use tracing_subscriber;
+
+use crate::services::summon::{Summon, grpc_summon::summon_service_server::SummonServiceServer};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::DEBUG)
+        .init();
+
+    info!("Dragon Bot Z - Engine");
+
+    let addr: std::net::SocketAddr = "127.0.0.1:58180".parse()?;
+    info!("Listening address set to: {}", addr);
+
+    info!("Initializing services...");
+    let summon = Summon::default();
+    info!("Services intialized ✅");
+
+    info!("Now running 🚀");
+    Server::builder()
+        .add_service(SummonServiceServer::new(summon))
+        .serve(addr)
+        .await?;
+
+    Ok(())
 }
