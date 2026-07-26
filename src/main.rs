@@ -15,11 +15,12 @@
 //! along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //! ---
 //! dragonbotz entrypoint
+pub mod core;
 pub mod models;
 pub mod services;
 
 use tonic::transport::Server;
-use tracing::info;
+use tracing::{debug, info};
 use tracing_subscriber;
 
 use crate::services::summon::{Summon, grpc_summon::summon_service_server::SummonServiceServer};
@@ -30,16 +31,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with_max_level(tracing::Level::DEBUG)
         .init();
 
-    info!("Dragon Bot Z - Engine");
+    info!("🐉🔮 Dragon Bot Z - Engine 🔮🐉");
 
-    let addr: std::net::SocketAddr = "127.0.0.1:58180".parse()?;
-    info!("Listening address set to: {}", addr);
-
-    info!("Initializing services...");
+    info!("⏳ Initializing gRPC services...");
     let summon = Summon::default();
-    info!("Services intialized ✅");
+    info!("✅ gRPC services intialized");
 
-    info!("Now running 🚀");
+    info!("⏳ Loading characters...");
+    let characters =
+        core::characters::load_characters(std::path::Path::new("res/assets/characters"))?;
+    info!("✅ Characters loaded: {}", characters.iter().count());
+
+    info!("🚀 Now running");
+    let addr: std::net::SocketAddr = "127.0.0.1:58180".parse()?;
+    info!("🌐 Listening address set to: {}", addr);
+
     Server::builder()
         .add_service(SummonServiceServer::new(summon))
         .serve(addr)

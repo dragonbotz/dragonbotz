@@ -13,32 +13,4 @@
 //!
 //! You should have received a copy of the GNU General Public License
 //! along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//! ---
-//! Implementation of the summon service
-
-use tonic::{Request, Response, Status};
-use tracing::info;
-
-use grpc_summon::summon_service_server::SummonService;
-use grpc_summon::{SummonOneRequest, SummonOneResponse};
-
-pub mod grpc_summon {
-    tonic::include_proto!("summon");
-}
-
-#[derive(Debug, Default)]
-pub struct Summon {}
-
-#[tonic::async_trait]
-impl SummonService for Summon {
-    async fn summon_one(
-        &self,
-        request: Request<SummonOneRequest>,
-    ) -> Result<Response<SummonOneResponse>, Status> {
-        info!("Hello!");
-
-        let response = SummonOneResponse {};
-
-        Ok(Response::new(response))
-    }
-}
+pub mod characters;

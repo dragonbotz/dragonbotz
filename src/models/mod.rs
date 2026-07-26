@@ -17,26 +17,35 @@
 //! Declaration and implementation of serializables
 
 /// Represents a rarity
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+    PartialEq, Eq, PartialOrd, Ord, Debug, serde_repr::Deserialize_repr, serde_repr::Serialize_repr,
+)]
+#[repr(u8)]
 pub enum Rarity {
-    Common,
-    Uncommon,
-    Super,
-    Extreme,
-    Ultra,
-    Kami,
+    Common = 0,
+    Uncommon = 1,
+    Super = 2,
+    Extreme = 3,
+    Ultra = 4,
+    Kami = 5,
 }
 
-/// Represents a dragonbotz character
-pub struct Character<'a> {
-    name: &'a str,
+/// Represents a character
+#[derive(Debug, serde::Deserialize)]
+pub struct Character {
+    id: u32,
+    name: String,
     rarity: Rarity,
 }
 
-impl<'a> Character<'a> {
+impl Character {
     /// Creates a new character
-    pub fn new(name: &'a String, rarity: Rarity) -> Self {
-        Character { name, rarity }
+    pub fn new(id: u32, name: String, rarity: Rarity) -> Self {
+        Character { id, name, rarity }
+    }
+
+    pub fn id(&self) -> u32 {
+        self.id
     }
 
     pub fn name(&self) -> &str {
